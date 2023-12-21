@@ -2,7 +2,8 @@ const express = require("express");
 const { MongoClient } = require("mongodb");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
-const URL = "mongodb://localhost:27017";
+const dotenv = require("dotenv").config();
+const URL = process.dotenv.db;
 const token = require("jsonwebtoken"); 
 var nodemailer = require("nodemailer");
 const app = express();
@@ -58,9 +59,9 @@ app.post("/login", async (req, res) => {
         user.password
       );
       if (password) {
-        // const token = JsonWebToken.sign({ id: user._id }, process.env.SECRET_KEY, {
-        //   expiresIn: "1d",
-        // });
+        const token = JsonWebToken.sign({ id: user._id }, process.env.SECRET_KEY, {
+          expiresIn: "1d",
+        });
         res.json({ message: "login sucessful", token });
       } else {
         res.status(404).json({ message: "passsword is incorrect" });
@@ -90,9 +91,9 @@ app.post("/forget-password", async (req, res) => {
     if (!user) {
       res.status(400).json({ message: "user not found" });
     }
-    // const token = token.JsonWebToken.sign({ id: user._id }, process.env.SECRET_KEY, {
-    //   expiresIn: "1d",
-    // });
+    const token = token.JsonWebToken.sign({ id: user._id }, process.env.SECRET_KEY, {
+      expiresIn: "1d",
+    });
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -123,3 +124,6 @@ app.post("/forget-password", async (req, res) => {
 
 app.listen(4050, () => { 'server started in port localhost:4050'
 });
+
+
+
