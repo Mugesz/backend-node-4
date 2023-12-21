@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const cors = require("cors");
 const dotenv = require("dotenv").config();
 const URL = process.env.DB;
-const token = require("jsonwebtoken"); 
+const jwt = require("jsonwebtoken"); 
 var nodemailer = require("nodemailer");
 const app = express();
 
@@ -59,7 +59,7 @@ app.post("/login", async (req, res) => {
         user.password
       );
       if (password) {
-        const token = JsonWebToken.sign({ id: user._id }, process.env.SECRET_KEY, {
+        const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
           expiresIn: "1d",
         });
         res.json({ message: "login sucessful", token });
@@ -91,7 +91,7 @@ app.post("/forget-password", async (req, res) => {
     if (!user) {
       res.status(400).json({ message: "user not found" });
     }
-    const token = token.JsonWebToken.sign({ id: user._id }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
       expiresIn: "1d",
     });
     var transporter = nodemailer.createTransport({
