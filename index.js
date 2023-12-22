@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(cors(
   {
-    origin:"*",
+    origin:"https://master--zingy-pony-c1800a.netlify.app",
   }
 ));
 
