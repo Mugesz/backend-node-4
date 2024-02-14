@@ -2,18 +2,18 @@ const express = require("express");
 const { MongoClient } = require("mongodb");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
-const dotenv = require("dotenv").config();
+require("dotenv").config();
 const URL = process.env.DB;
-const jwt = require("jsonwebtoken"); 
+const jwt = require("jsonwebtoken");
 var nodemailer = require("nodemailer");
 const app = express();
 
 app.use(express.json());
-app.use(cors(
-  {
-    origin:"*",
-  }
-));
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
@@ -32,17 +32,9 @@ app.post("/", async (req, res) => {
     const salt = await bcrypt.genSaltSync(10);
     const hash = await bcrypt.hash(req.body.password, salt);
     req.body.password = hash;
-
     const connection = await MongoClient.connect(URL);
     const db = connection.db("Authentic");
-
-    try {
-      const user = await db.collection("user").insertOne(req.body);
-    } catch (dbError) {
-      console.log("Database error:", dbError);
-      throw dbError;
-    }
-
+    const user = await db.collection("user").insertOne(req.body);
     await connection.close();
     res.json({ message: "successful" });
   } catch (error) {
@@ -69,7 +61,6 @@ app.post("/login", async (req, res) => {
       } else {
         res.status(404).json({ message: "passsword is incorrect" });
       }
-
     } else {
       res.status(404).json({
         message: "email or password is incorrect",
@@ -120,13 +111,12 @@ app.post("/forget-password", async (req, res) => {
       }
     });
   } catch (error) {
-    console.log(error)
-    res.status(500).json({message:'internal error'})
+    console.log(error);
+    res.status(500).json({ message: "internal error" });
   }
 });
 
-app.listen(4050, () => { 'server started in port localhost:4050'
+app.listen(4050, () => {
+  "server started in port localhost:4050";
 });
-
-
 
